@@ -6,6 +6,7 @@ import com.example.libraryportal.Service.AccountService;
 import com.example.libraryportal.Service.BookService;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,9 +17,9 @@ import java.util.List;
 
 @Controller
 public class LibraryController {
-    private AccountService accountService;
-    private BookService bookService;
-    private RestTemplate restTemplate;
+    private final AccountService accountService;
+    private final BookService bookService;
+    private final RestTemplate restTemplate;
 
     public String currentUser = "";
 
@@ -56,6 +57,18 @@ public class LibraryController {
         modelAndView.addObject("user", currentAccount);
         return modelAndView;
     }
+    @GetMapping(value = "home/edit/{id}")
+    public String getEditProfilePage(@PathVariable Long id, Model model ){
+        Account savedAccount = accountService.findAccountByUsername(currentUser);
+        model.addAttribute("user", savedAccount);
+        return "edit-profile";
+    }
+    @PostMapping(value = "home/edit/{id}")
+    public ModelAndView putEditProfile(@PathVariable Long id,  Account account ){
+        accountService.updateAccount(id, account);
+        currentUser = account.getAccountUserName();
+        return getLibraryHomePage();
+    }
 
     @GetMapping(value = "/home/books")
     private ModelAndView getAllbooks(@Param("keyword") String keyword) {
@@ -75,6 +88,8 @@ public class LibraryController {
     }
 
 
+
+
 // ADMIN WEBPAGES
 
     @GetMapping(value = "/admin/home")
@@ -90,6 +105,14 @@ public class LibraryController {
         List<Book> BookList = bookService.SearchBookByName(keyword);
         ModelAndView modelAndView = new ModelAndView("Admin-Books");
         modelAndView.addObject("booklist", BookList);
+        modelAndView.addObject("keyword", keyword);
+        return modelAndView;
+    }
+    @GetMapping(value = "/admin/students")
+    private ModelAndView getAdminAllStudent(@Param("keyword") String keyword) {
+        List<Account> accounts = accountService.SearchStudentByName(keyword);
+        ModelAndView modelAndView = new ModelAndView("Admin-Students");
+        modelAndView.addObject("accounts", accounts);
         modelAndView.addObject("keyword", keyword);
         return modelAndView;
     }

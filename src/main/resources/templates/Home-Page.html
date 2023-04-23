@@ -28,6 +28,9 @@
         </div>
         <hr />
       </form>
+      <a th:href="@{/home/edit/{id}(id=${user.accountID})}">
+        <button type="button"  class="btn btn-warning">Edit</button>
+      </a>
     </div>
   </div>
 
