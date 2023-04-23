@@ -2,18 +2,16 @@ package com.example.libraryportal.Service;
 
 import com.example.libraryportal.Models.Account;
 import com.example.libraryportal.Models.AccountRepo;
-import com.example.libraryportal.Models.Book;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
 @Component
-public class AccountService {
+public class accountService {
     private AccountRepo accountRepo;
 
-    public AccountService(AccountRepo accountRepo) {
+    public accountService(AccountRepo accountRepo) {
         this.accountRepo = accountRepo;
     }
 

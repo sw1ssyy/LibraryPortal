@@ -2,8 +2,8 @@ package com.example.libraryportal.Controller;
 
 import com.example.libraryportal.Models.Account;
 import com.example.libraryportal.Models.Book;
-import com.example.libraryportal.Service.AccountService;
 import com.example.libraryportal.Service.BookService;
+import com.example.libraryportal.Service.accountService;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,14 +17,14 @@ import java.util.List;
 
 @Controller
 public class LibraryController {
-    private final AccountService accountService;
+    private final accountService accountservice;
     private final BookService bookService;
     private final RestTemplate restTemplate;
 
     public String currentUser = "";
 
-    public LibraryController(AccountService accountService, BookService bookService, RestTemplate restTemplate) {
-        this.accountService = accountService;
+    public LibraryController(accountService accountservice, BookService bookService, RestTemplate restTemplate) {
+        this.accountservice = accountservice;
         this.bookService = bookService;
         this.restTemplate = restTemplate;
     }
@@ -38,7 +38,7 @@ public class LibraryController {
 
     @PostMapping(value = "/login")
     public ModelAndView checkLogin(Account account) {
-        if (accountService.checkAccountExists(account.getAccountUserName(), account.getAccountPassword()) && !account.getAccountUserName().equals("admin")) {
+        if (accountservice.checkAccountExists(account.getAccountUserName(), account.getAccountPassword()) && !account.getAccountUserName().equals("admin")) {
             System.out.println("Account: '" + account.getAccountUserName() + "' Login Success!");
             currentUser = account.getAccountUserName();
             return getLibraryHomePage();
@@ -52,20 +52,20 @@ public class LibraryController {
 
     @GetMapping(value = "/home")
     private ModelAndView getLibraryHomePage() {
-        Account currentAccount = accountService.findAccountByUsername(currentUser);
+        Account currentAccount = accountservice.findAccountByUsername(currentUser);
         ModelAndView modelAndView = new ModelAndView("Home-Page");
         modelAndView.addObject("user", currentAccount);
         return modelAndView;
     }
     @GetMapping(value = "home/edit/{id}")
     public String getEditProfilePage(@PathVariable Long id, Model model ){
-        Account savedAccount = accountService.findAccountByUsername(currentUser);
+        Account savedAccount = accountservice.findAccountByUsername(currentUser);
         model.addAttribute("user", savedAccount);
         return "edit-profile";
     }
     @PostMapping(value = "home/edit/{id}")
     public ModelAndView putEditProfile(@PathVariable Long id,  Account account ){
-        accountService.updateAccount(id, account);
+        accountservice.updateAccount(id, account);
         currentUser = account.getAccountUserName();
         return getLibraryHomePage();
     }
@@ -94,7 +94,7 @@ public class LibraryController {
 
     @GetMapping(value = "/admin/home")
     private ModelAndView getAdminHomePage() {
-        Account currentAccount = accountService.findAccountByUsername(currentUser);
+        Account currentAccount = accountservice.findAccountByUsername(currentUser);
         ModelAndView modelAndView = new ModelAndView("adminHomePage");
         modelAndView.addObject("user", currentAccount);
         return modelAndView;
@@ -110,7 +110,7 @@ public class LibraryController {
     }
     @GetMapping(value = "/admin/students")
     private ModelAndView getAdminAllStudent(@Param("keyword") String keyword) {
-        List<Account> accounts = accountService.SearchStudentByName(keyword);
+        List<Account> accounts = accountservice.SearchStudentByName(keyword);
         ModelAndView modelAndView = new ModelAndView("Admin-Students");
         modelAndView.addObject("accounts", accounts);
         modelAndView.addObject("keyword", keyword);
