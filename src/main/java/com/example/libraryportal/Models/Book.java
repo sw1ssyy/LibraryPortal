@@ -1,10 +1,11 @@
 package com.example.libraryportal.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
+
+import java.util.Set;
 
 @Data
 @Entity
@@ -16,4 +17,9 @@ public class Book {
     private Double bookFee;
 
     private String bookAuthor;
+
+    @ManyToMany(mappedBy = "borrowedBooks")
+    @JsonIgnore
+    @ToString.Exclude
+    Set<Account> accountsBorrowed;
 }

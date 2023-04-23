@@ -19,4 +19,8 @@ public class BookService {
         }
         return bookRepo.findBookByBookName(title);
     }
+
+    public Book findBookByID(Long id){
+        return bookRepo.findBookByBookISBN(id);
+    }
 }

@@ -7,16 +7,13 @@
   <title>Library Home Page</title>
 </head>
 <body>
-<div th:insert="~{fragments/navbar :: header}"></div>
+<div th:insert="~{fragments/adminnavbar :: header}"></div>
 <div class="container">
-  <div class="display-4" id="welcome-message" th:object="${user}">
-    <p  class="text-center mt-4" th:text="'Welcome ' + ${user.accountUserName}"></p>
-  </div>
   <div class="student-profile">
     <div class="content">
-      <h3 class="text-sm-center">Library Account Details</h3>
+      <h3 class="text-sm-center">Admin account Details</h3>
       <hr />
-      <form action="#" th:action="@{/home}" method="get" th:object="${user}">
+      <form action="#" th:action="@{admin/home}" method="get" th:object="${user}">
         <div class="form-group">
           <p th:text="'Account ID:  ' + ${user.accountID} "></p>
         </div>
@@ -30,8 +27,6 @@
       </form>
     </div>
   </div>
-
-
 </div>
 </body>
 </html>

@@ -5,8 +5,10 @@ import com.example.libraryportal.Models.AccountRepo;
 import com.example.libraryportal.Models.Book;
 import com.example.libraryportal.Models.BookRepo;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Set;
 
@@ -15,13 +17,7 @@ public class DatabaseData {
 @Bean
     CommandLineRunner initDatabase(AccountRepo accountRepo, BookRepo bookRepo){
     return args ->{
-        Account mister = new Account();
-        mister.setAccountUserName("Mister");
-        mister.setAccountPassword("test");
 
-        Account testaccount = new Account();
-        testaccount.setAccountUserName("testaccount");
-        testaccount.setAccountPassword("test");
 
         Book ReadyPlayerOne = new Book();
         ReadyPlayerOne.setBookName("Ready Player One");
@@ -33,9 +29,28 @@ public class DatabaseData {
         book1984.setBookAuthor("George Orwell");
         book1984.setBookFee(19.84);
 
-        accountRepo.saveAllAndFlush(Set.of(mister,testaccount));
-        bookRepo.saveAllAndFlush(Set.of(ReadyPlayerOne,book1984));
+        Account c3538468 = new Account();
+        c3538468.setAccountUserName("c3538468");
+        c3538468.setAccountPassword("test");
+        c3538468.borrowBook(book1984);
+        Account c1234567 = new Account();
+        c1234567.setAccountUserName("c1234567");
+        c1234567.setAccountPassword("test");
+        c1234567.borrowBook(ReadyPlayerOne);
+
+        Account admin = new Account();
+        admin.setAccountUserName("admin");
+        admin.setAccountPassword("admin");
+
+        accountRepo.saveAllAndFlush(Set.of(admin,c3538468,c1234567));
 
     };
+
 }
+    @Bean
+    public RestTemplate template(RestTemplateBuilder builder) {
+        return builder.build();
+    }
 }
+
+
