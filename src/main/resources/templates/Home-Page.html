@@ -10,7 +10,7 @@
 <div th:insert="~{fragments/navbar :: header}"></div>
 <div class="container">
   <div class="display-4" id="welcome-message" th:object="${user}">
-    <p  class="text-center mt-4" th:text="'Welcome ' + ${user.accountUserName}"></p>
+    <p  class="text-center mt-4" th:text="'Welcome ' + ${user.getStudentId}"></p>
   </div>
   <div class="student-profile">
     <div class="content">
@@ -21,10 +21,10 @@
           <p th:text="'Account ID:  ' + ${user.accountID} "></p>
         </div>
         <div class="form-group">
-          <p th:text="'Username:  ' + ${user.accountUserName} "></p>
+          <p th:text="'Username:  ' + ${user.studentId} "></p>
         </div>
         <div class="form-group">
-          <p  th:text="'Password: ' + ${user.accountPassword}"></p>
+          <p  th:text="'Password: ' + ${user.password}"></p>
         </div>
         <hr />
       </form>

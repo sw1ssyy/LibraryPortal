@@ -16,11 +16,11 @@
                 <form action="#" th:action="@{/login}" method="post" th:object="${account}">
                     <div class="form-group">
                         <label for="UsernameInput">Username</label>
-                        <input type="text" class="form-control" id="UsernameInput" placeholder="Username" required="required" th:field="*{accountUserName}" >
+                        <input type="text" class="form-control" id="UsernameInput" placeholder="Username" required="required" th:field="*{studentId}" >
                     </div>
                     <div class="form-group">
                         <label for="PasswordInput">Password</label>
-                        <input type="password" class="form-control" id="PasswordInput" placeholder="Password" required="required" th:field="*{accountPassword}" >
+                        <input type="password" class="form-control" id="PasswordInput" placeholder="Password" required="required" th:field="*{password}" >
                     </div>
                     <button type="submit" class="btn btn-primary m-2">Login</button>
                     <button type="reset" class="btn btn-secondary m-2">Reset</button>

@@ -2,16 +2,20 @@ package com.example.libraryportal.Controller;
 
 import com.example.libraryportal.Models.Account;
 import com.example.libraryportal.Models.Book;
+import com.example.libraryportal.Models.Invoice;
 import com.example.libraryportal.Models.Receipt;
 import com.example.libraryportal.Service.BookService;
 import com.example.libraryportal.Service.accountService;
 import com.example.libraryportal.Service.receiptService;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -23,15 +27,13 @@ public class LibraryController {
 
     private final BookService bookService;
     private final accountService accservice;
-    private final RestTemplate restTemplate;
     private final receiptService receiptservice;
 
     public String currentUser = "";
 
-    public LibraryController(accountService accservice, BookService bookService, RestTemplate restTemplate , receiptService receiptservice) {
+    public LibraryController(accountService accservice, BookService bookService , receiptService receiptservice) {
         this.accservice = accservice;
         this.bookService = bookService;
-        this.restTemplate = restTemplate;
         this.receiptservice = receiptservice;
     }
 
@@ -44,15 +46,17 @@ public class LibraryController {
 
     @PostMapping(value = "/login")
     public ModelAndView checkLogin(Account account) {
-        if (accservice.checkAccountExists(account.getAccountUserName(), account.getAccountPassword()) && !account.getAccountUserName().equals("admin")) {
-            System.out.println("Account: '" + account.getAccountUserName() + "' Login Success!");
-            currentUser = account.getAccountUserName();
+        if (accservice.checkAccountExists(account.getStudentId(), account.getPassword()) && !account.getStudentId().equals("admin")) {
+            System.out.println("Account: '" + account.getStudentId() + "' Login Success!");
+            currentUser = account.getStudentId();
             return getLibraryHomePage();
-        } else if (account.getAccountUserName().equals("admin") && account.getAccountPassword().equals("admin")) {
-            currentUser = account.getAccountUserName();
+        }
+        else if (account.getStudentId().equals("admin") && account.getPassword().equals("admin")) {
+            currentUser = account.getStudentId();
             return getAdminHomePage();
-        } else
-            System.out.println("Account: '" + account.getAccountUserName() + "' Is not Found!");
+        }
+        else
+            System.out.println("Account: '" + account.getStudentId() + "' Is not Found!");
         return new ModelAndView("Login-Failed");
     }
 
@@ -72,7 +76,7 @@ public class LibraryController {
     @PostMapping(value = "home/edit/{id}")
     public ModelAndView putEditProfile(@PathVariable Long id,  Account account ){
         accservice.updateAccount(id, account);
-        currentUser = account.getAccountUserName();
+        currentUser = account.getStudentId();
         return getLibraryHomePage();
     }
 
@@ -95,15 +99,14 @@ public class LibraryController {
 
     @GetMapping(value = "/home/books/{id}/borrow")
     public ModelAndView borrowSingleBook(@PathVariable Long id){
-        Receipt newRecipt = new Receipt();
+        Receipt newReceipt = new Receipt();
         Book selectedbook = bookService.findBookByID(id);
-        newRecipt.setISBN(selectedbook.getBookISBN());
-        newRecipt.setDateBorrowed(LocalDate.now());
-        newRecipt.setDateDue(newRecipt.getDateBorrowed().plusMonths(1));
-        newRecipt.setDateReturned(null);
-        receiptservice.addRecipt(newRecipt);
+        newReceipt.setISBN(selectedbook.getBookISBN());
+        newReceipt.setDateBorrowed(LocalDate.now());
+        newReceipt.setDateDue(newReceipt.getDateBorrowed().plusMonths(1));
+        receiptservice.addRecipt(newReceipt);
         ModelAndView modelAndView = new ModelAndView("Receipt-Detail");
-        modelAndView.addObject("recipt", newRecipt);
+        modelAndView.addObject("recipt", newReceipt);
         modelAndView.addObject("book", selectedbook);
         return modelAndView;
     }
@@ -113,7 +116,7 @@ public class LibraryController {
         ModelAndView modelAndView = new ModelAndView("BorrowedBooks");
         List<Receipt>receiptList = receiptservice.getAllRecipts();
         if(receiptList.isEmpty()){
-            return new ModelAndView("BorrowedBooksEmpty");
+            return new ModelAndView("BorrowedBooks-Empty");
         }
         else
             modelAndView.addObject("receiptlist", receiptList);
@@ -122,13 +125,29 @@ public class LibraryController {
 
     @GetMapping(value = "/home/borrowed/return/{id}")
     public ModelAndView returnBorrowedBook(@PathVariable Long id){
-        ModelAndView modelAndView = new ModelAndView("ReturnBook");
-        return modelAndView;
+        Receipt returnedbookReceipt = receiptservice.findReceiptByID(id);
+        if(LocalDate.now().isBefore(returnedbookReceipt.getDateDue())){
+            receiptservice.deleteReceipt(returnedbookReceipt);
+            return new ModelAndView("ReturnedBookNoFine");
+        }
+        else{
+            System.out.println(currentUser + " has been fined!");
+           Invoice invoice =  receiptservice.createOverdueInvoice(returnedbookReceipt,accservice.findAccountByUsername(currentUser));
+           receiptservice.deleteReceipt(returnedbookReceipt);
+           ModelAndView modelAndView = new  ModelAndView("ReturnBookFine");
+            modelAndView.addObject("invoice", invoice);
+            return modelAndView;
+        }
+
     }
 
 
 
-
+// API for Creating New Library Account
+@PostMapping("/api/account")
+ResponseEntity<Account> newAccount(@RequestBody Account account) {
+        return accservice.createNewAccount(account);
+}
 
 // ADMIN WEBPAGES
 

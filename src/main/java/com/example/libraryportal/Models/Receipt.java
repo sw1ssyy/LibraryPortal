@@ -15,9 +15,11 @@ public class Receipt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String studentID;
     private Long ISBN;
     private LocalDate DateBorrowed;
 
     private LocalDate DateDue;
-    private LocalDate DateReturned;
+
 }

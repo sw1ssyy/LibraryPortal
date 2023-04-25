@@ -1,5 +1,7 @@
 package com.example.libraryportal.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,9 +17,10 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountID;
 
-    private String accountUserName;
+    @JsonProperty("studentId")
+    private String studentId;
 
-    private String accountPassword;
+    private String password;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
@@ -26,6 +29,7 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "BookISBN"))
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     Set<Book> borrowedBooks;
     public void borrowBook(Book book){
         if(borrowedBooks == null){
@@ -33,4 +37,12 @@ public class Account {
         }
         borrowedBooks.add(book);
     }
+    public Account(){
+
+    }
+    public Account(String studentId) {
+        this.studentId = studentId;
+    }
+
+
 }
