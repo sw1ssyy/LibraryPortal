@@ -1,4 +1,10 @@
-# LibraryPortal
-Library Portal for SESCAssignment for Final Year Module of MEng Computer Science
+# SESCAssignment
+MEng Final Year Module
 
-Connects with [StudentPortal](https://github.com/sw1ssyy/FinancePortal) and [@FinancePortal](https://github.com/sw1ssyy/StudentPortal)
+Connects with [FinancePortal](https://github.com/sw1ssyy/FinancePortal) and [StudentPortal](https://github.com/sw1ssyy/StudentPortal)
+
+| Microservice| Framework|  Database
+| ----------- | ----------- |------|
+| StudentPortal| Spring Boot |H2
+| FinancePortal| Django  |MySQL
+| LibraryPortal| Spring Boot|H2
