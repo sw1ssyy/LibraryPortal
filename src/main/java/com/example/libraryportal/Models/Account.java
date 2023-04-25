@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -16,8 +18,8 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountID;
-
     @JsonProperty("studentId")
+    @Column(unique = true)
     private String studentId;
 
     private String password;
@@ -31,12 +33,16 @@ public class Account {
     @ToString.Exclude
     @JsonIgnore
     Set<Book> borrowedBooks;
+
+    @JsonIgnore
     public void borrowBook(Book book){
         if(borrowedBooks == null){
             borrowedBooks = new HashSet<>();
         }
         borrowedBooks.add(book);
     }
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Receipt> receiptList = new ArrayList<>();
     public Account(){
 
     }

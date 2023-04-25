@@ -1,10 +1,8 @@
 package com.example.libraryportal.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -15,8 +13,10 @@ public class Receipt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String studentID;
+    @ManyToOne
+    @JoinColumn(name="account_fk",referencedColumnName="studentID")
+    @ToString.Exclude
+    private Account studentID;
     private Long ISBN;
     private LocalDate DateBorrowed;
 

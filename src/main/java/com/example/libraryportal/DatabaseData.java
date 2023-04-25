@@ -41,7 +41,7 @@ public class DatabaseData {
         admin.setPassword("admin");
 
         Receipt testReceipt = new Receipt();
-        testReceipt.setStudentID("c3538468");
+        testReceipt.setStudentID(c3538468);
         testReceipt.setISBN(1L);
         testReceipt.setDateDue(LocalDate.now().minusYears(1));
         testReceipt.setDateBorrowed(LocalDate.now().minusYears(2));

@@ -103,6 +103,7 @@ public class LibraryController {
         Book selectedbook = bookService.findBookByID(id);
         newReceipt.setISBN(selectedbook.getBookISBN());
         newReceipt.setDateBorrowed(LocalDate.now());
+        newReceipt.setStudentID(accservice.findAccountByUsername(currentUser));
         newReceipt.setDateDue(newReceipt.getDateBorrowed().plusMonths(1));
         receiptservice.addRecipt(newReceipt);
         ModelAndView modelAndView = new ModelAndView("Receipt-Detail");
@@ -114,7 +115,7 @@ public class LibraryController {
     @GetMapping(value = "/home/borrowed")
     public ModelAndView getBorrowedBooks(){
         ModelAndView modelAndView = new ModelAndView("BorrowedBooks");
-        List<Receipt>receiptList = receiptservice.getAllRecipts();
+        List<Receipt>receiptList = receiptservice.getAllReciptsByUser(accservice.findAccountByUsername(currentUser));
         if(receiptList.isEmpty()){
             return new ModelAndView("BorrowedBooks-Empty");
         }

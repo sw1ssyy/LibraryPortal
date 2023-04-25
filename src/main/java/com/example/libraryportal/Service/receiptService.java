@@ -56,4 +56,8 @@ public class receiptService {
       Long distance = Math.abs(ChronoUnit.DAYS.between(dateReturned, dueDate));
         return distance * DAY_FINE;
     }
+
+    public List<Receipt> getAllReciptsByUser(Account account) {
+        return receiptrepo.getAllByStudentID(account);
+    }
 }
