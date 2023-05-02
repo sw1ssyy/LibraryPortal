@@ -168,6 +168,27 @@ ResponseEntity<Account> newAccount(@RequestBody Account account) {
         modelAndView.addObject("keyword", keyword);
         return modelAndView;
     }
+    @GetMapping(value = "/admin/books/add")
+    private ModelAndView getAdminAddBook(){
+        ModelAndView modelAndView = new ModelAndView("Admin-AddBook");
+        modelAndView.addObject("book" , new Book());
+        return modelAndView;
+    }
+
+    @PostMapping(value = "/admin/books/add")
+    private ModelAndView postAdminAddBook(Book book){
+       Boolean check = bookService.addBook(book);
+        if(check = true){
+            ModelAndView modelAndView = new ModelAndView("Admin-AddBook-Success");
+            modelAndView.addObject("book", book);
+            return modelAndView;
+        }
+        else {
+            return new ModelAndView("Admin-AddBook-Failed");
+        }
+        }
+
+
     @GetMapping(value = "/admin/students")
     private ModelAndView getAdminAllStudent(@Param("keyword") String keyword) {
         List<Account> accounts = accservice.SearchStudentByName(keyword);
@@ -176,4 +197,12 @@ ResponseEntity<Account> newAccount(@RequestBody Account account) {
         modelAndView.addObject("keyword", keyword);
         return modelAndView;
     }
+    @GetMapping(value = "/admin/loans")
+    private ModelAndView getAdminAllLoans(@Param("keyword") String keyword){
+        List<Receipt> receiptList = receiptservice.getAllRecipts();
+        ModelAndView modelAndView =new ModelAndView("Admin-AllLoans");
+        modelAndView.addObject("receipts", receiptList);
+        return modelAndView;
+    }
+
 }

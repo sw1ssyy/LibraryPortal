@@ -19,6 +19,27 @@ public class BookService {
         }
         return bookRepo.findBookByBookName(title);
     }
+   // True if a book already exists, False for not existing in db
+    Boolean checkbookExists(String title, String author){
+        Book book = bookRepo.findBookByBookNameAndBookAuthor(title,author);
+       if(book != null){
+           return true;
+       }
+       else
+           return false;
+    }
+
+
+    public Boolean addBook(Book book){
+       Boolean bookstatus = checkbookExists(book.getBookName(), book.getBookAuthor());
+        if(bookstatus.equals(true)){
+            return false;
+        }
+        else {
+            bookRepo.save(book);
+            return true;
+        }
+    }
 
     public Book findBookByID(Long id){
         return bookRepo.findBookByBookISBN(id);

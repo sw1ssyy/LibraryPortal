@@ -14,7 +14,7 @@
 <div class="container">
   <form th:action="@{/admin/books}">
     <label>
-      <input class="align-items-center" type="text" placeholder="Course Search" name="keyword" th:value="${keyword}">
+      <input class="align-items-center" type="text" placeholder="Book Search" name="keyword" th:value="${keyword}">
       <button type="submit" class="btn btn-primary btn-sm mb-1">Search</button>
     </label>
   </form>
@@ -24,7 +24,6 @@
       <th>Book Title</th>
       <th>Book Author</th>
       <th>Book Fee</th>
-      <th>Action</th>
     </tr>
     <tr  th:each="book : ${booklist}">
       <td th:text="${book.bookISBN}"></td>
@@ -32,15 +31,12 @@
       <td th:text="${book.bookAuthor}"></td>
       <td th:text="${book.bookFee}"></td>
       <td>
-        <a th:href="@{/courses/{id}(id=${book.bookISBN})}">
-          <button type="submit" class="btn btn-primary btn-sm">Borrow</button>
-        </a>
       </td>
     </tr>
   </table>
-  <form method="post" th:action="@{/admin/books}">
-      <button type="submit" class="btn btn-primary btn-sm mb-1">Add Book</button>
-  </form>
+  <a th:href="@{/admin/books/add}">
+    <button class="btn btn-warning">Add Book</button>
+  </a>
 </div>
 </body>
 </html>
