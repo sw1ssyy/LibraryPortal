@@ -9,14 +9,12 @@ import com.example.libraryportal.Service.accountService;
 import com.example.libraryportal.Service.receiptService;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
@@ -62,14 +60,14 @@ public class LibraryController {
 
     @GetMapping(value = "/home")
     public ModelAndView getLibraryHomePage() {
-        Account currentAccount = accservice.findAccountByUsername(currentUser);
+        Account currentAccount = accservice.findAccountByStudentID(currentUser);
         ModelAndView modelAndView = new ModelAndView("Home-Page");
         modelAndView.addObject("user", currentAccount);
         return modelAndView;
     }
     @GetMapping(value = "home/edit/{id}")
     public String getEditProfilePage(@PathVariable Long id, Model model ){
-        Account savedAccount = accservice.findAccountByUsername(currentUser);
+        Account savedAccount = accservice.findAccountByStudentID(currentUser);
         model.addAttribute("user", savedAccount);
         return "Edit-Profile";
     }
@@ -103,7 +101,7 @@ public class LibraryController {
         Book selectedbook = bookService.findBookByID(id);
         newReceipt.setISBN(selectedbook.getBookISBN());
         newReceipt.setDateBorrowed(LocalDate.now());
-        newReceipt.setStudentID(accservice.findAccountByUsername(currentUser));
+        newReceipt.setStudentID(accservice.findAccountByStudentID(currentUser));
         newReceipt.setDateDue(newReceipt.getDateBorrowed().plusMonths(1));
         receiptservice.addRecipt(newReceipt);
         ModelAndView modelAndView = new ModelAndView("Receipt-Detail");
@@ -115,7 +113,7 @@ public class LibraryController {
     @GetMapping(value = "/home/borrowed")
     public ModelAndView getBorrowedBooks(){
         ModelAndView modelAndView = new ModelAndView("BorrowedBooks");
-        List<Receipt>receiptList = receiptservice.getAllReciptsByUser(accservice.findAccountByUsername(currentUser));
+        List<Receipt>receiptList = receiptservice.getAllReciptsByUser(accservice.findAccountByStudentID(currentUser));
         if(receiptList.isEmpty()){
             return new ModelAndView("BorrowedBooks-Empty");
         }
@@ -133,7 +131,7 @@ public class LibraryController {
         }
         else{
             System.out.println(currentUser + " has been fined!");
-           Invoice invoice =  receiptservice.createOverdueInvoice(returnedbookReceipt,accservice.findAccountByUsername(currentUser));
+           Invoice invoice =  receiptservice.createOverdueInvoice(returnedbookReceipt,accservice.findAccountByStudentID(currentUser));
            receiptservice.deleteReceipt(returnedbookReceipt);
            ModelAndView modelAndView = new  ModelAndView("ReturnBookFine");
             modelAndView.addObject("invoice", invoice);
@@ -154,7 +152,7 @@ ResponseEntity<Account> newAccount(@RequestBody Account account) {
 
     @GetMapping(value = "/admin/home")
     private ModelAndView getAdminHomePage() {
-        Account currentAccount = accservice.findAccountByUsername(currentUser);
+        Account currentAccount = accservice.findAccountByStudentID(currentUser);
         ModelAndView modelAndView = new ModelAndView("Admin-HomePage");
         modelAndView.addObject("user", currentAccount);
         return modelAndView;
@@ -174,6 +172,8 @@ ResponseEntity<Account> newAccount(@RequestBody Account account) {
         modelAndView.addObject("book" , new Book());
         return modelAndView;
     }
+
+
 
     @PostMapping(value = "/admin/books/add")
     private ModelAndView postAdminAddBook(Book book){

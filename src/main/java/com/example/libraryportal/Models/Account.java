@@ -39,6 +39,9 @@ public class Account {
         if(borrowedBooks == null){
             borrowedBooks = new HashSet<>();
         }
+        if(book == null){
+             throw new RuntimeException("Error: Book is Null");
+        }
         borrowedBooks.add(book);
     }
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
